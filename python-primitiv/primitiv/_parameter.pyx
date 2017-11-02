@@ -49,8 +49,10 @@ cdef class _Parameter:
             raise MemoryError()
         if device is None:
             device = _Device.get_default()
+        if shape is None and init is None:
+            self.wrapped = new CppParameter()
         # Parameter(shape, np.ndarray init, device) new from ndarray
-        if isinstance(init, np.ndarray):
+        elif isinstance(init, np.ndarray):
             if shape is None:
                 shape = _Shape(init.shape, 1)
             self.wrapped = new CppParameter(normShape(shape).wrapped, ndarrays_to_vector([init]), device.wrapped[0])
